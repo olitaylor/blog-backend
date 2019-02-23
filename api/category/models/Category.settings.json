@@ -1,0 +1,23 @@
+{
+  "connection": "default",
+  "collectionName": "postcategories",
+  "info": {
+    "name": "category",
+    "description": "Post Categories"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "comment": ""
+  },
+  "attributes": {
+    "Label": {
+      "default": "",
+      "type": "string"
+    },
+    "post": {
+      "model": "post",
+      "via": "categories"
+    }
+  }
+}
