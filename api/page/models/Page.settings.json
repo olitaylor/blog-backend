@@ -1,9 +1,9 @@
 {
   "connection": "default",
-  "collectionName": "",
+  "collectionName": "pages",
   "info": {
-    "name": "post",
-    "description": "post"
+    "name": "page",
+    "description": "Standard page"
   },
   "options": {
     "increments": true,
@@ -18,15 +18,6 @@
     "Content": {
       "default": "",
       "type": "text"
-    },
-    "Date": {
-      "default": "",
-      "type": "date",
-      "required": true
-    },
-    "categories": {
-      "collection": "category",
-      "via": "post"
     }
   }
 }

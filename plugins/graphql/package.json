@@ -21,7 +21,7 @@
   "_resolved": "https://registry.npmjs.org/strapi-plugin-graphql/-/strapi-plugin-graphql-3.0.0-alpha.24.1.tgz",
   "_shasum": "53e80a1d12090b82a1b28cccdf0c5c6f36b5fd8b",
   "_spec": "strapi-plugin-graphql@3.0.0-alpha.24.1",
-  "_where": "/Users/olivertaylor/Documents/development/personal/blog",
+  "_where": "/Users/olivertaylor/Documents/development/personal/blog-backend",
   "author": {
     "name": "A Strapi developer"
   },

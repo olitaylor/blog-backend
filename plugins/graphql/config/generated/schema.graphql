@@ -1,15 +1,37 @@
+"""Basic article"""
+type Article {
+  id: ID!
+  created_at: DateTime!
+  updated_at: DateTime!
+  article_name: String
+  article_image: UploadFile
+  article_content: String
+}
+
+input ArticleInput {
+  article_name: String
+  article_image: ID
+  article_content: String
+}
+
 """Post Categories"""
 type Category {
   id: ID!
   created_at: DateTime!
   updated_at: DateTime!
   Label: String
-  post: Post
 }
 
 input CategoryInput {
   Label: String
-  post: ID
+}
+
+input createArticleInput {
+  data: ArticleInput
+}
+
+type createArticlePayload {
+  article: Article
 }
 
 input createCategoryInput {
@@ -20,12 +42,12 @@ type createCategoryPayload {
   category: Category
 }
 
-input createPostInput {
-  data: PostInput
+input createPageInput {
+  data: PageInput
 }
 
-type createPostPayload {
-  post: Post
+type createPagePayload {
+  page: Page
 }
 
 input createRoleInput {
@@ -49,6 +71,14 @@ The `DateTime` scalar represents a date and time following the ISO 8601 standard
 """
 scalar DateTime
 
+input deleteArticleInput {
+  where: InputID
+}
+
+type deleteArticlePayload {
+  article: Article
+}
+
 input deleteCategoryInput {
   where: InputID
 }
@@ -57,12 +87,12 @@ type deleteCategoryPayload {
   category: Category
 }
 
-input deletePostInput {
+input deletePageInput {
   where: InputID
 }
 
-type deletePostPayload {
-  post: Post
+type deletePagePayload {
+  page: Page
 }
 
 input deleteRoleInput {
@@ -81,9 +111,14 @@ type deleteUserPayload {
   user: UsersPermissionsUser
 }
 
+input editArticleInput {
+  article_name: String
+  article_image: ID
+  article_content: String
+}
+
 input editCategoryInput {
   Label: String
-  post: ID
 }
 
 input editFileInput {
@@ -99,11 +134,9 @@ input editFileInput {
   related: [ID]
 }
 
-input editPostInput {
+input editPageInput {
   Title: String
   Content: String
-  Date: DateTime
-  categories: [ID]
 }
 
 input editRoleInput {
@@ -147,15 +180,18 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | Category | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Post | createPostPayload | updatePostPayload | deletePostPayload | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | createUserPayload | updateUserPayload | deleteUserPayload
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | Article | createArticlePayload | updateArticlePayload | deleteArticlePayload | Category | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Page | createPagePayload | updatePagePayload | deletePagePayload | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | createUserPayload | updateUserPayload | deleteUserPayload
 
 type Mutation {
+  createArticle(input: createArticleInput): createArticlePayload
+  updateArticle(input: updateArticleInput): updateArticlePayload
+  deleteArticle(input: deleteArticleInput): deleteArticlePayload
   createCategory(input: createCategoryInput): createCategoryPayload
   updateCategory(input: updateCategoryInput): updateCategoryPayload
   deleteCategory(input: deleteCategoryInput): deleteCategoryPayload
-  createPost(input: createPostInput): createPostPayload
-  updatePost(input: updatePostInput): updatePostPayload
-  deletePost(input: deletePostInput): deletePostPayload
+  createPage(input: createPageInput): createPagePayload
+  updatePage(input: updatePageInput): updatePagePayload
+  deletePage(input: deletePageInput): deletePagePayload
 
   """Create a new role"""
   createRole(input: createRoleInput): createRolePayload
@@ -177,29 +213,27 @@ type Mutation {
   upload(refId: ID, ref: String, source: String, file: Upload!): UploadFile!
 }
 
-"""post"""
-type Post {
+"""Standard page"""
+type Page {
   id: ID!
   created_at: DateTime!
   updated_at: DateTime!
   Title: String
   Content: String
-  Date: DateTime!
-  categories(sort: String, limit: Int, start: Int, where: JSON): [Category]
 }
 
-input PostInput {
+input PageInput {
   Title: String
   Content: String
-  Date: DateTime!
-  categories: [ID]
 }
 
 type Query {
+  article(id: ID!): Article
+  articles(sort: String, limit: Int, start: Int, where: JSON): [Article]
   category(id: ID!): Category
   categories(sort: String, limit: Int, start: Int, where: JSON): [Category]
-  post(id: ID!): Post
-  posts(sort: String, limit: Int, start: Int, where: JSON): [Post]
+  page(id: ID!): Page
+  pages(sort: String, limit: Int, start: Int, where: JSON): [Page]
   files(sort: String, limit: Int, start: Int, where: JSON): [UploadFile]
   role(id: ID!): UsersPermissionsRole
 
@@ -220,6 +254,15 @@ input RoleInput {
   users: [ID]
 }
 
+input updateArticleInput {
+  where: InputID
+  data: editArticleInput
+}
+
+type updateArticlePayload {
+  article: Article
+}
+
 input updateCategoryInput {
   where: InputID
   data: editCategoryInput
@@ -229,13 +272,13 @@ type updateCategoryPayload {
   category: Category
 }
 
-input updatePostInput {
+input updatePageInput {
   where: InputID
-  data: editPostInput
+  data: editPageInput
 }
 
-type updatePostPayload {
-  post: Post
+type updatePagePayload {
+  page: Page
 }
 
 input updateRoleInput {

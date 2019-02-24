@@ -1,8 +1,8 @@
-/* global Post */
+/* global Article */
 'use strict';
 
 /**
- * Post.js service
+ * Article.js service
  *
  * @description: A set of functions similar to controller's actions to avoid code duplication.
  */
@@ -16,20 +16,20 @@ const utils = require('strapi-hook-bookshelf/lib/utils/');
 module.exports = {
 
   /**
-   * Promise to fetch all posts.
+   * Promise to fetch all articles.
    *
    * @return {Promise}
    */
 
   fetchAll: (params) => {
     // Convert `params` object to filters compatible with Bookshelf.
-    const filters = strapi.utils.models.convertParams('post', params);
+    const filters = strapi.utils.models.convertParams('article', params);
     // Select field to populate.
-    const populate = Post.associations
+    const populate = Article.associations
       .filter(ast => ast.autoPopulate !== false)
       .map(ast => ast.alias);
 
-    return Post.query(function(qb) {
+    return Article.query(function(qb) {
       _.forEach(filters.where, (where, key) => {
         if (_.isArray(where.value) && where.symbol !== 'IN' && where.symbol !== 'NOT IN') {
           for (const value in where.value) {
@@ -52,33 +52,33 @@ module.exports = {
   },
 
   /**
-   * Promise to fetch a/an post.
+   * Promise to fetch a/an article.
    *
    * @return {Promise}
    */
 
   fetch: (params) => {
     // Select field to populate.
-    const populate = Post.associations
+    const populate = Article.associations
       .filter(ast => ast.autoPopulate !== false)
       .map(ast => ast.alias);
 
-    return Post.forge(_.pick(params, 'id')).fetch({
+    return Article.forge(_.pick(params, 'id')).fetch({
       withRelated: populate
     });
   },
 
   /**
-   * Promise to count a/an post.
+   * Promise to count a/an article.
    *
    * @return {Promise}
    */
 
   count: (params) => {
     // Convert `params` object to filters compatible with Bookshelf.
-    const filters = strapi.utils.models.convertParams('post', params);
+    const filters = strapi.utils.models.convertParams('article', params);
 
-    return Post.query(function(qb) {
+    return Article.query(function(qb) {
       _.forEach(filters.where, (where, key) => {
         if (_.isArray(where.value)) {
           for (const value in where.value) {
@@ -92,50 +92,50 @@ module.exports = {
   },
 
   /**
-   * Promise to add a/an post.
+   * Promise to add a/an article.
    *
    * @return {Promise}
    */
 
   add: async (values) => {
     // Extract values related to relational data.
-    const relations = _.pick(values, Post.associations.map(ast => ast.alias));
-    const data = _.omit(values, Post.associations.map(ast => ast.alias));
+    const relations = _.pick(values, Article.associations.map(ast => ast.alias));
+    const data = _.omit(values, Article.associations.map(ast => ast.alias));
 
     // Create entry with no-relational data.
-    const entry = await Post.forge(data).save();
+    const entry = await Article.forge(data).save();
 
     // Create relational data and return the entry.
-    return Post.updateRelations({ id: entry.id , values: relations });
+    return Article.updateRelations({ id: entry.id , values: relations });
   },
 
   /**
-   * Promise to edit a/an post.
+   * Promise to edit a/an article.
    *
    * @return {Promise}
    */
 
   edit: async (params, values) => {
     // Extract values related to relational data.
-    const relations = _.pick(values, Post.associations.map(ast => ast.alias));
-    const data = _.omit(values, Post.associations.map(ast => ast.alias));
+    const relations = _.pick(values, Article.associations.map(ast => ast.alias));
+    const data = _.omit(values, Article.associations.map(ast => ast.alias));
 
     // Create entry with no-relational data.
-    const entry = Post.forge(params).save(data);
+    const entry = Article.forge(params).save(data);
 
     // Create relational data and return the entry.
-    return Post.updateRelations(Object.assign(params, { values: relations }));
+    return Article.updateRelations(Object.assign(params, { values: relations }));
   },
 
   /**
-   * Promise to remove a/an post.
+   * Promise to remove a/an article.
    *
    * @return {Promise}
    */
 
   remove: async (params) => {
     params.values = {};
-    Post.associations.map(association => {
+    Article.associations.map(association => {
       switch (association.nature) {
         case 'oneWay':
         case 'oneToOne':
@@ -152,45 +152,45 @@ module.exports = {
       }
     });
 
-    await Post.updateRelations(params);
+    await Article.updateRelations(params);
 
-    return Post.forge(params).destroy();
+    return Article.forge(params).destroy();
   },
 
   /**
-   * Promise to search a/an post.
+   * Promise to search a/an article.
    *
    * @return {Promise}
    */
 
   search: async (params) => {
     // Convert `params` object to filters compatible with Bookshelf.
-    const filters = strapi.utils.models.convertParams('post', params);
+    const filters = strapi.utils.models.convertParams('article', params);
     // Select field to populate.
-    const populate = Post.associations
+    const populate = Article.associations
       .filter(ast => ast.autoPopulate !== false)
       .map(ast => ast.alias);
 
-    const associations = Post.associations.map(x => x.alias);
-    const searchText = Object.keys(Post._attributes)
-      .filter(attribute => attribute !== Post.primaryKey && !associations.includes(attribute))
-      .filter(attribute => ['string', 'text'].includes(Post._attributes[attribute].type));
+    const associations = Article.associations.map(x => x.alias);
+    const searchText = Object.keys(Article._attributes)
+      .filter(attribute => attribute !== Article.primaryKey && !associations.includes(attribute))
+      .filter(attribute => ['string', 'text'].includes(Article._attributes[attribute].type));
 
-    const searchNoText = Object.keys(Post._attributes)
-      .filter(attribute => attribute !== Post.primaryKey && !associations.includes(attribute))
-      .filter(attribute => !['string', 'text', 'boolean', 'integer', 'decimal', 'float'].includes(Post._attributes[attribute].type));
+    const searchNoText = Object.keys(Article._attributes)
+      .filter(attribute => attribute !== Article.primaryKey && !associations.includes(attribute))
+      .filter(attribute => !['string', 'text', 'boolean', 'integer', 'decimal', 'float'].includes(Article._attributes[attribute].type));
 
-    const searchInt = Object.keys(Post._attributes)
-      .filter(attribute => attribute !== Post.primaryKey && !associations.includes(attribute))
-      .filter(attribute => ['integer', 'decimal', 'float'].includes(Post._attributes[attribute].type));
+    const searchInt = Object.keys(Article._attributes)
+      .filter(attribute => attribute !== Article.primaryKey && !associations.includes(attribute))
+      .filter(attribute => ['integer', 'decimal', 'float'].includes(Article._attributes[attribute].type));
 
-    const searchBool = Object.keys(Post._attributes)
-      .filter(attribute => attribute !== Post.primaryKey && !associations.includes(attribute))
-      .filter(attribute => ['boolean'].includes(Post._attributes[attribute].type));
+    const searchBool = Object.keys(Article._attributes)
+      .filter(attribute => attribute !== Article.primaryKey && !associations.includes(attribute))
+      .filter(attribute => ['boolean'].includes(Article._attributes[attribute].type));
 
     const query = (params._q || '').replace(/[^a-zA-Z0-9.-\s]+/g, '');
 
-    return Post.query(qb => {
+    return Article.query(qb => {
       // Search in columns which are not text value.
       searchNoText.forEach(attribute => {
         qb.orWhereRaw(`LOWER(${attribute}) LIKE '%${_.toLower(query)}%'`);
@@ -209,7 +209,7 @@ module.exports = {
       }
 
       // Search in columns with text using index.
-      switch (Post.client) {
+      switch (Article.client) {
         case 'mysql':
           qb.orWhereRaw(`MATCH(${searchText.join(',')}) AGAINST(? IN BOOLEAN MODE)`, `*${query}*`);
           break;
