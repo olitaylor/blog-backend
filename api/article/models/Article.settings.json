@@ -24,6 +24,17 @@
     "article_content": {
       "default": "",
       "type": "text"
+    },
+    "article_author": {
+      "model": "user",
+      "via": "article",
+      "plugin": "users-permissions"
+    },
+    "article_url": {
+      "default": "",
+      "type": "string",
+      "required": true,
+      "unique": true
     }
   }
 }

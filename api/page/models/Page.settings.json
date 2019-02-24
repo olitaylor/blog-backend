@@ -11,13 +11,24 @@
     "comment": ""
   },
   "attributes": {
-    "Title": {
+    "page_title": {
       "default": "",
-      "type": "string"
+      "type": "string",
+      "required": true
     },
-    "Content": {
+    "page_content": {
       "default": "",
       "type": "text"
+    },
+    "menu": {
+      "model": "menu",
+      "via": "page"
+    },
+    "url": {
+      "default": "",
+      "unique": true,
+      "type": "string",
+      "required": true
     }
   }
 }

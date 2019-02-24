@@ -6,12 +6,16 @@ type Article {
   article_name: String
   article_image: UploadFile
   article_content: String
+  article_author: UsersPermissionsUser
+  article_url: String!
 }
 
 input ArticleInput {
   article_name: String
   article_image: ID
   article_content: String
+  article_author: ID
+  article_url: String!
 }
 
 """Post Categories"""
@@ -40,6 +44,14 @@ input createCategoryInput {
 
 type createCategoryPayload {
   category: Category
+}
+
+input createMenuInput {
+  data: MenuInput
+}
+
+type createMenuPayload {
+  menu: Menu
 }
 
 input createPageInput {
@@ -87,6 +99,14 @@ type deleteCategoryPayload {
   category: Category
 }
 
+input deleteMenuInput {
+  where: InputID
+}
+
+type deleteMenuPayload {
+  menu: Menu
+}
+
 input deletePageInput {
   where: InputID
 }
@@ -115,6 +135,8 @@ input editArticleInput {
   article_name: String
   article_image: ID
   article_content: String
+  article_author: ID
+  article_url: String
 }
 
 input editCategoryInput {
@@ -134,9 +156,17 @@ input editFileInput {
   related: [ID]
 }
 
+input editMenuInput {
+  name: String
+  active: Boolean
+  page: ID
+}
+
 input editPageInput {
-  Title: String
-  Content: String
+  page_title: String
+  page_content: String
+  menu: ID
+  url: String
 }
 
 input editRoleInput {
@@ -156,6 +186,7 @@ input editUserInput {
   confirmed: Boolean
   blocked: Boolean
   role: ID
+  article: ID
 }
 
 input FileInput {
@@ -180,7 +211,23 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | Article | createArticlePayload | updateArticlePayload | deleteArticlePayload | Category | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Page | createPagePayload | updatePagePayload | deletePagePayload | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | createUserPayload | updateUserPayload | deleteUserPayload
+"""Menu"""
+type Menu {
+  id: ID!
+  created_at: DateTime!
+  updated_at: DateTime!
+  name: String
+  active: Boolean
+  page: Page
+}
+
+input MenuInput {
+  name: String
+  active: Boolean
+  page: ID
+}
+
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | Article | createArticlePayload | updateArticlePayload | deleteArticlePayload | Category | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Menu | createMenuPayload | updateMenuPayload | deleteMenuPayload | Page | createPagePayload | updatePagePayload | deletePagePayload | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | createUserPayload | updateUserPayload | deleteUserPayload
 
 type Mutation {
   createArticle(input: createArticleInput): createArticlePayload
@@ -189,6 +236,9 @@ type Mutation {
   createCategory(input: createCategoryInput): createCategoryPayload
   updateCategory(input: updateCategoryInput): updateCategoryPayload
   deleteCategory(input: deleteCategoryInput): deleteCategoryPayload
+  createMenu(input: createMenuInput): createMenuPayload
+  updateMenu(input: updateMenuInput): updateMenuPayload
+  deleteMenu(input: deleteMenuInput): deleteMenuPayload
   createPage(input: createPageInput): createPagePayload
   updatePage(input: updatePageInput): updatePagePayload
   deletePage(input: deletePageInput): deletePagePayload
@@ -218,13 +268,17 @@ type Page {
   id: ID!
   created_at: DateTime!
   updated_at: DateTime!
-  Title: String
-  Content: String
+  page_title: String!
+  page_content: String
+  menu: Menu
+  url: String!
 }
 
 input PageInput {
-  Title: String
-  Content: String
+  page_title: String!
+  page_content: String
+  menu: ID
+  url: String!
 }
 
 type Query {
@@ -232,6 +286,8 @@ type Query {
   articles(sort: String, limit: Int, start: Int, where: JSON): [Article]
   category(id: ID!): Category
   categories(sort: String, limit: Int, start: Int, where: JSON): [Category]
+  menu(id: ID!): Menu
+  menus(sort: String, limit: Int, start: Int, where: JSON): [Menu]
   page(id: ID!): Page
   pages(sort: String, limit: Int, start: Int, where: JSON): [Page]
   files(sort: String, limit: Int, start: Int, where: JSON): [UploadFile]
@@ -270,6 +326,15 @@ input updateCategoryInput {
 
 type updateCategoryPayload {
   category: Category
+}
+
+input updateMenuInput {
+  where: InputID
+  data: editMenuInput
+}
+
+type updateMenuPayload {
+  menu: Menu
 }
 
 input updatePageInput {
@@ -327,6 +392,7 @@ input UserInput {
   confirmed: Boolean
   blocked: Boolean
   role: ID
+  article: ID
 }
 
 type UsersPermissionsMe {
@@ -372,4 +438,5 @@ type UsersPermissionsUser {
   confirmed: Boolean
   blocked: Boolean
   role: UsersPermissionsRole
+  article: Article
 }
